@@ -1,7 +1,7 @@
 import datetime
 
 class EconomyManager:
-    moneySupply = 10000
+    money_supply = 10000
 
 
 

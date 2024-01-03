@@ -1,14 +1,24 @@
 from enum import Enum
 
-class Product:
-    def __init__(self, price: float, salestax: float) -> Product:
+class Product(Enum):
+    APPLE = "APPLES", #????
+    BANANA = "BANANA",
+    TOMATO = "TOMATO",
+    CUCUMBER = "CUCUMBER",
+
+class __OLD_Product__:
+    def __init__(self, price: float, sales_tax: float) -> Product:
         self.price = price
-        self.salestax = salestax
+        self.sales_tax = sales_tax
     
-    def finalPrice(self) -> float:
-        return self.price * (1+self.tax)
+    def final_price(self) -> float:
+        return self.price * (1 + self.tax)
 
 
+    
+# Economy state???
+# Theo you should clean this up and make it work properly
+"""
 class MoneyOperations():
     INCOME = 0
     REVENUE = 0
@@ -32,12 +42,12 @@ class MoneyOperations():
         INCOME_TAX = 0.35
     elif(INCOME > 539900):
         INCOME_TAX = 0.37
-    
+"""
 
 class BusinessCategories(Enum):
     FARMER = 0
 
-class Products(Enum):
+class Producer(Enum):
     FARMER = {
         "APPLES" : Product(4, 6),
         "BANANAS" : Product(1.2, 6),
@@ -46,21 +56,21 @@ class Products(Enum):
     }
 
 class BusinessOwner:
-    PRODUCTS = {}
+    INITIAL_BUDGET = 1000.00
+
     def __init__(self, category: BusinessCategories):
-        match category:
-            case 0:
-                PRODUCTS = Products.FARMER
-    def change_price(self, product, newPrice):
-        PRODUCTS[product].price = newPrice
+        self.money = BusinessOwner.INITIAL_BUDGET
+        self.products = { }
+        # match category:
+        #     case 0:
+        #         self.products[] Producer.FARMER
 
-class FarmProducts:
-    def __init__(self) -> None:
-        self.products = {
-
-        }
+    def change_price(self, product: Product, new_price: float):
+        self.products[product].price = new_price
     
 class Farmer(BusinessOwner):
     def __init__(self):
         super().__init__()
+
+
     
