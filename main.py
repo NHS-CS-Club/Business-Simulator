@@ -1,4 +1,7 @@
-from roles import customer
+from roles import customer, business, business_manager;
 
-c = customer()
-print(c)
+def main():
+    businesses = business_manager.BusinessManager()
+
+if __name__ == "main":
+    main()
