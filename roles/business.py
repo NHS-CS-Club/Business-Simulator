@@ -1,102 +1,170 @@
 from enum import Enum
+from customer import Customer
 
-class Product(Enum):
-    APPLE = "APPLE", #????
-    BANANA = "BANANA",
-    TOMATO = "TOMATO",
-    CUCUMBER = "CUCUMBER",
+class BusinessError(Enum):
+    ProductDoesNotExist = "This business does not sell the product that you are looking for"
+
+class Product:
+    product_name: str
+    price: int
+    quantity: int
+
+    def __init__(self, name: str, price: int, quantity: int):
+        self.product_name = name
+        self.price = price
+        self.quantity = quantity
+
 
 class BusinessCategories(Enum):
     FARMER = 0,
 
-class BusinessOwner():
-    intial_budget = 1000.00
-    business_count = 0
-    business_index = []
-    name = ""
+class BusinessOwner:
+    intial_budget:int = 1000_00 # _ after 2 places bc money is in cents, not dollars
+    products: list[Product] = []
+    name = ''
 
-    def __init__(self, category: BusinessCategories, name: str): # something
+    def __init__(self, category: BusinessCategories, name: str, products: list[Product]): # something
         self.money = BusinessOwner.intial_budget
-        self.products = set()
+        self.products = products
         self.category = category
         self.name = name
-        BusinessOwner.business_index += [self]
+        # Add itself to the BusinessManager instance
 
-    def add_product(self, product: Product, price: float, init_quantity: int = 0):
-        self.products.add({
-            'product': product,
-            'price': price,
-            'quantity': init_quantity
-        })
 
-    def set_price(self, product: Product, new_price: float):
-        self.products.get('price') = new_price
+    def get_product(self, product: str) -> Product|BusinessError:
+        for prod in self.products:
+            if prod.product_name == product:
+                return prod
+        
+        return BusinessError.ProductDoesNotExist
+
+    def add_product(self, name: str, price: int, init_quantity: int = 0):
+        self.products.append(Product(name, price, init_quantity))
+
+    # Assumes that product with `name`
+    def set_price(self, name: str, new_price: int):
+        prod = self.get_product(name)
     
-    def set_quantity(self, product: Product, new_quantity: int):
-        self.products.get(product)['quantity'] = new_quantity
+        if prod is not BusinessError.ProductDoesNotExist:
+            prod.price = new_price
     
     # Buys amount of products to restock
     # For now, it will just cost some constant amount of money
     def restock(self, product: Product, amt: int):
-        PRICE = 5
-        if PRICE * amt > self.money:
-            amt = self.money // PRICE
+        if product.price * amt > self.money:
+            amt = self.money // product.price
 
-        self.products.get(product)['quantity'] += amt
-        self.money -= PRICE * amt
-
-        
-    
-    def update():
-        
-        print("""
-              
-              
-
-
-
-
-
-
-""")
-        
+        # If budget to buy is more than or equal to product restock price, then buy as many as possiblels si tc
+        self.products[self.products.index(product)].quantity += amt
+        self.money -= product.price * amt
         
 
+    # The business has a sell function which the customer calls
+    # Returns amt of money the customer subtracted from their balance
+    # Assumes that product with name `product_name` exists in `self.products
+    def sell(self, customer: Customer, product_name: str, amt: int) -> int|BusinessError:
+        prod = self.get_product(product_name)
+        if prod is BusinessError.ProductDoesNotExist:
+            return prod # propogates the error
         
-        INCOME = 0
-        INCOME_TAX_PERCENTAGE = 0.0
+        total_cost = prod.price * amt  # Total cost that customer will have to pay at inputted product   
 
-        if(INCOME <= 10275):
-            INCOME_TAX_PERCENTAGE = 0.10
-        elif(INCOME > 10275):
-            INCOME_TAX_PERCENTAGE = 0.12
-        elif(INCOME > 41775):
-            INCOME_TAX_PERCENTAGE = 0.22
-        elif(INCOME > 89075):
-            INCOME_TAX_PERCENTAGE = 0.24
-        elif(INCOME > 170050):
-            INCOME_TAX_PERCENTAGE = 0.32
-        elif(INCOME > 215950):
-            INCOME_TAX_PERCENTAGE = 0.35
-        elif(INCOME > 539900):
-            INCOME_TAX_PERCENTAGE = 0.37
+        # Can change if we want to error and have some other handling effect
+        if customer.money < total_cost:
+            amt = customer.money // prod.price
+            total_cost = prod.price * amt
 
-        REVENUE = 0
-        FIXED_COSTS = 0
-        VARIABLE_COSTS = 0
+        # Do some tax stuff
+        self.money += total_cost
+        
+        customer.money -= prod.price * amt
+        
+        return amt
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    """def update():
+        
+        income = 0
+        income_tax_percentage = 0.0
+
+        if(income <= 10275):
+            income_tax_percentage = 0.10
+        elif(income > 10275):
+            income_tax_percentage = 0.12
+        elif(income > 41775):
+            income_tax_percentage = 0.22
+        elif(income > 89075):
+            income_tax_percentage = 0.24
+        elif(income > 170050):
+            income_tax_percentage = 0.32
+        elif(income > 215950):
+            income_tax_percentage = 0.35
+        elif(income > 539900):
+            income_tax_percentage = 0.37
+
+        revenue = 0
+        fixed_costs = 0
+        variable_costs = 0
             
-        TOTAL_COSTS = FIXED_COSTS + VARIABLE_COSTS
-        PROFITS = (REVENUE - TOTAL_COSTS) * (1 + INCOME_TAX_PERCENTAGE)
-        MONEY = PROFITS + INCOME
-
-
-# class __OLD_Product__:
-#     def __init__(self, price: float, sales_tax: float) -> Product:
-#         self.price = price
-#         self.sales_tax = sales_tax
-    
-#     def final_price(self) -> float:
-#         return self.price * (1 + self.tax)
-
-
-
+        total_costs = fixed_costs + variable_costs
+        profits = (revenue - total_costs) * (1 + income_tax_percentage)
+        money = profits + income"""
