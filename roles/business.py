@@ -1,5 +1,7 @@
 from enum import Enum
-from customer import Customer
+# from customer import Customer
+from roles import customer
+from managers import transaction_manager as tm 
 
 class BusinessError(Enum):
     ProductDoesNotExist = "This business does not sell the product that you are looking for"
@@ -62,7 +64,7 @@ class BusinessOwner:
     # The business has a sell function which the customer calls
     # Returns amt of money the customer subtracted from their balance
     # Assumes that product with name `product_name` exists in `self.products
-    def sell(self, customer: Customer, product_name: str, amt: int) -> int|BusinessError:
+"""     def sell(self, customer: Customer, product_name: str, amt: int) -> int|BusinessError:
         prod = self.get_product(product_name)
         if prod is BusinessError.ProductDoesNotExist:
             return prod # propogates the error
@@ -141,7 +143,7 @@ class BusinessOwner:
 
 
 
-    """def update():
+    def update():
         
         income = 0
         income_tax_percentage = 0.0

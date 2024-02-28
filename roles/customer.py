@@ -1,8 +1,9 @@
 from random import random
-# from roles import business ??
-from business import Product 
+# from roles import business
 from enum import Enum
-from business_manager import BusinessManager
+from managers import business_manager as bm
+# from managers import transaction_manager as tm
+
 
 class Customer:
     budget: int = 500_00
@@ -10,14 +11,19 @@ class Customer:
     business_preference = [] # weights for each business
     
     def __init__(self) -> None:
-        # for business in list(BusinessCategories):
-        #     if business.value == preferred_business_index:
-        #         self.business_preference = business
         self.money = Customer.budget
 
-    def buy_item(self, product_name: str, amt: int, business_index: int, business_manager: BusinessManager) -> None:
-        pass
-    
+    def buy_item(self, product_name: str, amt: int, business_index: int, manager: bm.BusinessManager):
+        business = manager.get_business(business_index)
+        
+        # money_owed = tm.TransactionManager(business, product_name, amt)
+  
+        if isinstance(money_owed, int):
+            self.money -= money_owed
+        
+            
+        
+
     # Weighted average to decide from who to buy
     # Weighted average to decide what type of item to buy
     # ^ Does this until it runs out of budget
